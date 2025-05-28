@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ShopService } from '../../../core/service/shop.service';
+import { ShopService } from '../../../core/services/shop.service';
 import { MatDivider } from '@angular/material/divider';
 import { MatListOption, MatSelectionList } from '@angular/material/list';
 import { MatButton } from '@angular/material/button';
@@ -26,11 +26,12 @@ export class FiltersDialogComponent {
 
   selectedBrands: string[] = this.data.selectedBrands;
   selectedTypes: string[] = this.data.selectedTypes;
- 
-  applyFilters(){
+
+  applyFilters() {
     this.dialogRef.close({
       selectedBrands: this.selectedBrands,
       selectedTypes: this.selectedTypes
     })
   }
+
 }

@@ -1,9 +1,9 @@
 import { Component, inject, Input } from '@angular/core';
 import { Product } from '../../../shared/models/product';
 import { MatCard, MatCardActions, MatCardContent } from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
 import { CurrencyPipe } from '@angular/common';
 import { MatButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../../core/services/cart.service';
 
@@ -13,10 +13,10 @@ import { CartService } from '../../../core/services/cart.service';
   imports: [
     MatCard,
     MatCardContent,
-    CurrencyPipe,
     MatCardActions,
-    MatButton,
     MatIcon,
+    CurrencyPipe,
+    MatButton,
     RouterLink
   ],
   templateUrl: './product-item.component.html',

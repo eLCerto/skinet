@@ -1,9 +1,8 @@
 import { Component, inject, input } from '@angular/core';
 import { CartItem } from '../../../shared/models/cart';
 import { RouterLink } from '@angular/router';
-import { MatCard } from '@angular/material/card';
-import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { CurrencyPipe } from '@angular/common';
 import { CartService } from '../../../core/services/cart.service';
 
@@ -12,8 +11,8 @@ import { CartService } from '../../../core/services/cart.service';
   standalone: true,
   imports: [
     RouterLink,
-    MatIcon,
     MatButton,
+    MatIcon,
     CurrencyPipe
   ],
   templateUrl: './cart-item.component.html',
@@ -32,6 +31,6 @@ export class CartItemComponent {
   }
 
   removeItemFromCart() {
-    this.cartService.removeItemFromCart(this.item().productId, this.item().quantity)
+    this.cartService.removeItemFromCart(this.item().productId, this.item().quantity);
   }
 }

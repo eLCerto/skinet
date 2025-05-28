@@ -1,18 +1,19 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { ShopService } from '../../core/service/shop.service';
+import { Component, inject } from '@angular/core';
+import { ShopService } from '../../core/services/shop.service';
 import { Product } from '../../shared/models/product';
-import {MatCard} from '@angular/material/card';
+import { MatCard } from '@angular/material/card';
 import { ProductItemComponent } from "./product-item/product-item.component";
-import {MatDialog} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { FiltersDialogComponent } from './filters-dialog/filters-dialog.component';
 import { MatButton } from '@angular/material/button';
-import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { MatListOption, MatSelectionList, MatSelectionListChange } from '@angular/material/list';
 import { ShopParams } from '../../shared/models/shopParams';
-import {MatPaginatorModule, PageEvent} from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Pagination } from '../../shared/models/pagination';
 import { FormsModule } from '@angular/forms';
+import { EmptyStateComponent } from "../../shared/components/empty-state/empty-state.component";
 
 @Component({
   selector: 'app-shop',
@@ -26,15 +27,16 @@ import { FormsModule } from '@angular/forms';
     MatSelectionList,
     MatListOption,
     MatMenuTrigger,
-    MatPaginatorModule,
-    FormsModule
+    MatPaginator,
+    FormsModule,
+    EmptyStateComponent
 ],
   templateUrl: './shop.component.html',
   styleUrl: './shop.component.scss'
 })
-export class ShopComponent implements OnInit {
-  private shopService = inject(ShopService)
-  private dialogService = inject(MatDialog)
+export class ShopComponent {
+  private shopService = inject(ShopService);
+  private dialogService = inject(MatDialog);
   products?: Pagination<Product>;
   sortOptions = [
     {name: 'Alphabetical', value: 'name'},
@@ -44,20 +46,25 @@ export class ShopComponent implements OnInit {
   shopParams = new ShopParams();
   pageSizeOptions = [5,10,15,20]
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.initialiseShop();
   }
-
+  
   initialiseShop() {
-    this.shopService.getBrands();
     this.shopService.getTypes();
+    this.shopService.getBrands();
+    this.getProducts();
+  }
+
+  resetFilters() {
+    this.shopParams = new ShopParams();
     this.getProducts();
   }
 
   getProducts() {
     this.shopService.getProducts(this.shopParams).subscribe({
       next: response => this.products = response,
-      error: error => console.log(error)
+      error: error => console.error(error)
     })
   }
 
@@ -70,7 +77,6 @@ export class ShopComponent implements OnInit {
     this.shopParams.pageNumber = event.pageIndex + 1;
     this.shopParams.pageSize = event.pageSize;
     this.getProducts();
-
   }
 
   onSortChange(event: MatSelectionListChange) {
@@ -83,7 +89,7 @@ export class ShopComponent implements OnInit {
   }
 
   openFiltersDialog() {
-    const dialogRef= this.dialogService.open(FiltersDialogComponent,{
+    const dialogRef = this.dialogService.open(FiltersDialogComponent, {
       minWidth: '500px',
       data: {
         selectedBrands: this.shopParams.brands,
@@ -93,13 +99,12 @@ export class ShopComponent implements OnInit {
     dialogRef.afterClosed().subscribe({
       next: result => {
         if (result) {
-          console.log(result);
           this.shopParams.brands = result.selectedBrands;
           this.shopParams.types = result.selectedTypes;
           this.shopParams.pageNumber = 1;
           this.getProducts();
         }
-      }      
+      }
     })
   }
 }

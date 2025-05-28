@@ -11,8 +11,8 @@ $customTheme: mat.define-theme();
 .custom-theme {
     @include mat.all-component-themes($customTheme);
 
-    //override the button styles
-    .mdc-button, .mdc-raised-button, .mdc-stroked-button, .mdc-flat-button{
+    // override the button styles
+    .mdc-button, .mdc-raised-button, .mdc-stroked-button, .mdc-flat-button {
         @apply rounded-md
     }
 }
@@ -21,15 +21,15 @@ $customTheme: mat.define-theme();
     @apply mx-auto max-w-screen-2xl
 }
 
-.text-primary{
+.text-primary {
     color: #7d00fa;
 }
 
-button.match-input-height{
+button.match-input-height {
     height: var(--mat-form-field-container-height) !important;
 }
 
-.mdc-notched-outline__notch{
+.mdc-notched-outline__notch {
     border-right-style: none !important
 }
 

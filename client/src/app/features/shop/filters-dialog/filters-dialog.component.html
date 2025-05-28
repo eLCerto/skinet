@@ -3,7 +3,7 @@
     <mat-divider></mat-divider>
     <div class="flex p-4">
         <div class="w-1/2">
-            <h4 clas="font-semibold text-xl text-primary">Brands</h4>
+            <h4 class="font-semibold text-xl text-primary">Brands</h4>
             <mat-selection-list [(ngModel)]="selectedBrands" [multiple]="true">
                 @for (brand of shopService.brands; track $index) {
                     <mat-list-option [value]="brand">{{brand}}</mat-list-option>
@@ -12,7 +12,7 @@
         </div>
 
         <div class="w-1/2">
-            <h4 clas="font-semibold text-xl text-primary">Types</h4>
+            <h4 class="font-semibold text-xl text-primary">Types</h4>
             <mat-selection-list [(ngModel)]="selectedTypes" [multiple]="true">
                 @for (type of shopService.types; track $index) {
                     <mat-list-option [value]="type">{{type}}</mat-list-option>
@@ -23,4 +23,4 @@
     <div class="flex justify-end p-4">
         <button mat-flat-button (click)="applyFilters()">Apply Filters</button>
     </div>
-</div>>
+</div>

@@ -1,5 +1,5 @@
-import { Component, inject, Inject, OnInit } from '@angular/core';
-import { ShopService } from '../../../core/service/shop.service';
+import { Component, inject, OnInit } from '@angular/core';
+import { ShopService } from '../../../core/services/shop.service';
 import { ActivatedRoute } from '@angular/router';
 import { Product } from '../../../shared/models/product';
 import { CurrencyPipe } from '@angular/common';
@@ -27,29 +27,27 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.scss'
 })
-export class ProductDetailsComponent implements OnInit{
-  private shopsService = inject(ShopService);
+export class ProductDetailsComponent implements OnInit {
+  private shopService = inject(ShopService);
   private activatedRoute = inject(ActivatedRoute);
-  private cartService = inject(CartService)
+  private cartService = inject(CartService);
   product?: Product;
   quantityInCart = 0;
   quantity = 1;
-
 
   ngOnInit(): void {
     this.loadProduct();
   }
 
-  loadProduct(){
+  loadProduct() {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     if (!id) return;
-    this.shopsService.getProduct(+id).subscribe({
+    this.shopService.getProduct(+id).subscribe({
       next: product => {
         this.product = product;
         this.updateQuantityInCart();
       },
       error: error => console.log(error)
-      
     })
   }
 
@@ -66,14 +64,13 @@ export class ProductDetailsComponent implements OnInit{
     }
   }
 
-  updateQuantityInCart(){
+  updateQuantityInCart() {
     this.quantityInCart = this.cartService.cart()?.items
       .find(x => x.productId === this.product?.id)?.quantity || 0;
     this.quantity = this.quantityInCart || 1;
   }
 
-  getButtonText () {
+  getButtonText() {
     return this.quantityInCart > 0 ? 'Update cart' : 'Add to cart'
   }
-  
 }

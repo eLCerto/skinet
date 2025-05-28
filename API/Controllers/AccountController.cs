@@ -1,16 +1,14 @@
-using System;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using API.DTOs;
 using API.Extensions;
 using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
-public class AccountController(SignInManager<AppUser> signInManager): BaseApiController
+public class AccountController(SignInManager<AppUser> signInManager) : BaseApiController
 {
     [HttpPost("register")]
     public async Task<ActionResult> Register(RegisterDto registerDto)
@@ -22,7 +20,6 @@ public class AccountController(SignInManager<AppUser> signInManager): BaseApiCon
             Email = registerDto.Email,
             UserName = registerDto.Email
         };
-
 
         var result = await signInManager.UserManager.CreateAsync(user, registerDto.Password);
 
@@ -48,7 +45,6 @@ public class AccountController(SignInManager<AppUser> signInManager): BaseApiCon
         return NoContent();
     }
 
-    [Authorize]
     [HttpGet("user-info")]
     public async Task<ActionResult> GetUserInfo()
     {
@@ -56,21 +52,20 @@ public class AccountController(SignInManager<AppUser> signInManager): BaseApiCon
 
         var user = await signInManager.UserManager.GetUserByEmailWithAddress(User);
 
-        if (user == null) return Unauthorized();
-
         return Ok(new
         {
             user.FirstName,
             user.LastName,
             user.Email,
-            Address = user.Address.ToDto()
+            Address = user.Address?.ToDto(),
+            Roles = User.FindFirstValue(ClaimTypes.Role)
         });
     }
 
     [HttpGet("auth-status")]
     public ActionResult GetAuthState()
     {
-        return Ok(new {IsAuthenticated = User.Identity?.IsAuthenticated ?? false});
+        return Ok(new { IsAuthenticated = User.Identity?.IsAuthenticated ?? false });
     }
 
     [Authorize]
@@ -83,7 +78,7 @@ public class AccountController(SignInManager<AppUser> signInManager): BaseApiCon
         {
             user.Address = addressDto.ToEntity();
         }
-        else
+        else 
         {
             user.Address.UpdateFromDto(addressDto);
         }
@@ -94,5 +89,20 @@ public class AccountController(SignInManager<AppUser> signInManager): BaseApiCon
 
         return Ok(user.Address.ToDto());
     }
-}
 
+    [Authorize]
+    [HttpPost("reset-password")]
+    public async Task<ActionResult> ResetPassword(string currentPassword, string newPassword)
+    {
+        var user = await signInManager.UserManager.GetUserByEmail(User);
+
+        var result = await signInManager.UserManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+        if (result.Succeeded)
+        {
+            return Ok("Password updated");
+        } 
+
+        return BadRequest("Failed to update password");
+    }
+}
